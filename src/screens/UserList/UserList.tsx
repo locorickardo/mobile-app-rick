@@ -1,10 +1,16 @@
-import { ListItem } from "@rneui/themed";
-import { View, Text, FlatList } from "react-native";
+import React from "react";
+import { View, Text, FlatList, Pressable } from "react-native";
 
 import { useGetUsersQuery } from "../../store/api/usersApi";
 
 const UserList = ({ navigation }) => {
   const { data, isLoading } = useGetUsersQuery({});
+
+  const handleEditPress = (user) => {
+    // Navigate to the edit screen or implement your edit logic here
+    navigation.navigate("EditUserInfoStack", { user });
+  };
+
   return (
     <View>
       {isLoading ? (
@@ -13,17 +19,21 @@ const UserList = ({ navigation }) => {
         <FlatList
           data={data}
           renderItem={({ item }) => (
-            <ListItem
-              key={item.id}
-              onPress={() => {
-                navigation.navigate("UserInfo", { user: item });
+            <Pressable
+              onPress={() => handleEditPress(item)}
+              style={{
+                flexDirection: "row",
+                justifyContent: "space-between",
+                padding: 10,
+                borderBottomWidth: 1,
+                borderBottomColor: "#ccc",
               }}
             >
-              <ListItem.Content>
-                <ListItem.Title>{`${item.firstName} ${item.lastName}`}</ListItem.Title>
-              </ListItem.Content>
-            </ListItem>
+              <Text>{`${item.firstName} ${item.lastName}`}</Text>
+              <Text>Edit</Text>
+            </Pressable>
           )}
+          keyExtractor={(item) => item.id.toString()}
         />
       )}
     </View>
